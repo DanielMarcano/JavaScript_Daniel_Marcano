@@ -1,6 +1,10 @@
-// Inicializamos la variable con la que controlaremos la pantalla de la calculadora
+// Inicializamos las variables principales
+
+// Esta es la pantalla de la calculadora
 var pantalla = document.getElementById('display');
+// Acá concatenaremos todas las operaciones
 var operaciones = '';
+// Estas últimas tres están relacionadas con el botón de igual
 var resultado = '';
 var ultimoOperando = '';
 var ultimoNumero = '';
