@@ -1,6 +1,9 @@
 // Inicializamos la variable con la que controlaremos la pantalla de la calculadora
 var pantalla = document.getElementById('display');
 var operaciones = '';
+var resultado = '';
+var ultimoOperando = '';
+var ultimoNumero = '';
 
 // Cambia los estilos de la tecla, mientras la mantienes presionada con el mouse
 function presionarTecla(elemento) {
@@ -86,6 +89,10 @@ function limpiarPantalla() {
 function realizarOperacion(valor) {
   if (valor == "on") {
     pantalla.innerHTML = 0;
+    resultado = '';
+    operaciones = '';
+    ultimoOperando = '';
+    ultimoNumero = '';
   } else if (valor == "mas") {
       operaciones += valorActual() + "+";
       limpiarPantalla();
@@ -99,13 +106,23 @@ function realizarOperacion(valor) {
       operaciones += valorActual() + "/";
       limpiarPantalla();
   } else if (valor == "igual") {
-    // Al darle click al boton igual, añado mi ultimo valor
-    operaciones += valorActual();
-    // coloco el resultado de la expresion de la variable operaciones acá
-    var resultado = eval(operaciones).toString().substr(0,8);
-    // le mando el resultado a la pantalla
+    // Si no es la primera vez que tocas el boton de igual...
+    if (resultado != '') {
+      // Añade el ultimoOperando y el ultimoNumero a operaciones
+      // lo que permitirá que si, por ejemplo, sumas 2+3, y luego
+      // sigues dandole al botón de igual, le sume 3 al resultado cada vez que lo hagas...
+      operaciones += resultado + ultimoOperando + ultimoNumero;
+    } else {
+      // Si es la primera vez que tocas el boton de igual
+      ultimoOperando = operaciones.substr(operaciones.length-1);
+      ultimoNumero = valorActual();
+      operaciones += valorActual();
+    }
+    // Al final, guardamos la expresión obtenida en operaciones, hasta el dígito 8
+    resultado = eval(operaciones).toString().substr(0,8);
+    // Y reflejamos el resultado en pantalla!
     pantalla.innerHTML = resultado;
-    // limpio mi variable de operaciones
+    // limpiando, además, nuestras operaciones
     operaciones = '';
   }
 }
