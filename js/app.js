@@ -1,6 +1,6 @@
 // Inicializamos la variable con la que controlaremos la pantalla de la calculadora
 var pantalla = document.getElementById('display');
-
+var operaciones = '';
 
 // Cambia los estilos de la tecla, mientras la mantienes presionada con el mouse
 function presionarTecla(elemento) {
@@ -39,17 +39,17 @@ function recibirValorTecla(elemento) {
 // En esta funcion, se coloca el numero clickeado en la pantalla
 function colocarNumero(valor) {
   // Si la pantalla solo tiene un 0, reemplazalo por el valor
-  if (pantalla.innerHTML == "0") {
+  if (pantalla.innerHTML == "0" || pantalla.innerHTML == "") {
     // Si el valor no es un punto, ni un guion, sobreescribe el 0
     if (!isNaN(valor)) {
       pantalla.innerHTML = valor;
-    } else if (valor == ".") {
-      // De ser un punto, o un numero, agregalo a su derecha
+    } else if (valor == "." && pantalla.innerHTML != "") {
+      // De ser un punto, o un numero, y no estar vacía la pantalla, agrégalo a su derecha
       pantalla.innerHTML += valor;
     }
   } else if (pantalla.innerHTML.length < 8 || valor == "-") {
-    // Si la pantalla tiene menos de 7 digitos, puedes añadirle uno más
-    if (valor != "." && valor != "-") {
+    // Si la pantalla tiene menos de 8 digitos, puedes añadirle uno más
+    if (!isNaN(valor)) {
       pantalla.innerHTML+= valor;
     } else if (valor == ".") {
       // Si el valor es un punto, y no se encuentra otro en la pantalla, puedes agregarlo
@@ -57,11 +57,12 @@ function colocarNumero(valor) {
         pantalla.innerHTML+= valor;
       }
     } else {
-      // Si el valor es un guion...
+      // Si el valor es un guion, y la pantalla no tiene uno puesto
       if (pantalla.innerHTML.indexOf("-") == -1) {
         var auxiliar = valor + pantalla.innerHTML;
         pantalla.innerHTML = auxiliar;
       } else {
+        // Si el valor es un guion, y la pantalla ya lo tiene, lo borra
         var auxiliar = pantalla.innerHTML.slice(1);
         pantalla.innerHTML = auxiliar;
       }
@@ -71,10 +72,41 @@ function colocarNumero(valor) {
   }
 }
 
+// Con esta funcion tomamos el valor actual de la pantalla
+function valorActual() {
+  return Number(pantalla.innerHTML);
+}
+
+// Con esta funcion, limpio la pantalla
+function limpiarPantalla() {
+  pantalla.innerHTML = '';
+}
+
 // En esta funcion, se realiza la operacion de acuerdo a la tecla clickeada
 function realizarOperacion(valor) {
   if (valor == "on") {
     pantalla.innerHTML = 0;
+  } else if (valor == "mas") {
+      operaciones += valorActual() + "+";
+      limpiarPantalla();
+  } else if (valor == "menos") {
+      operaciones += valorActual() + "-";
+      limpiarPantalla();
+  } else if (valor == "por") {
+      operaciones += valorActual() + "*";
+      limpiarPantalla();
+  } else if (valor == "dividido") {
+      operaciones += valorActual() + "/";
+      limpiarPantalla();
+  } else if (valor == "igual") {
+    // Al darle click al boton igual, añado mi ultimo valor
+    operaciones += valorActual();
+    // coloco el resultado de la expresion de la variable operaciones acá
+    var resultado = eval(operaciones).toString().substr(0,8);
+    // le mando el resultado a la pantalla
+    pantalla.innerHTML = resultado;
+    // limpio mi variable de operaciones
+    operaciones = '';
   }
 }
 
